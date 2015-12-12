@@ -64,7 +64,7 @@ void S9xParseDisplayArg (char **argv, int &index, int argc);
 void S9xToggleSoundChannel (int channel);
 void S9xSetInfoString (const char *string);
 int S9xMinCommandLineArgs ();
-void S9xNextController ();
+//void S9xNextController ();
 bool8_32 S9xLoadROMImage (const char *string);
 const char *S9xSelectFilename (const char *def, const char *dir,
 			       const char *ext, const char *title);

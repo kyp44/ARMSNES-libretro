@@ -179,6 +179,7 @@ uint32 S9xReadJoypad(int which1)
 
 void retro_set_controller_port_device(unsigned in_port, unsigned device)
 {
+	// Do nothing, evidently this is not normally called
 }
 
 void retro_get_system_av_info(struct retro_system_av_info *info)
@@ -215,9 +216,10 @@ static void snes_init (void)
 	Settings.DisableMasterVolume = FALSE;
 	Settings.Mouse = FALSE;
 	Settings.SuperScope = FALSE;
+
+	// Initialize to no multi-tap
 	Settings.MultiPlayer5 = FALSE;
-	//	Settings.ControllerOption = SNES_MULTIPLAYER5;
-	Settings.ControllerOption = 0;
+	Settings.ControllerOption = SNES_JOYPAD;
 	
 	Settings.ForceTransparency = FALSE;
 	Settings.Transparency = TRUE;
@@ -353,7 +355,18 @@ static void report_buttons (void)
 		for (j = 0; j <= RETRO_DEVICE_ID_JOYPAD_R; j++)
 		{
 			if (input_cb(i, RETRO_DEVICE_JOYPAD, 0, j))
+			{
 				joys[i] |= (1 << (15 - j));
+				
+				// DJW If a button was pressed on controller 3 or 4 then we
+				// want to enable the multitap
+				if(i > 1 && !Settings.MultiPlayer5)
+				{
+					Settings.MultiPlayer5 = TRUE;
+					Settings.ControllerOption = SNES_MULTIPLAYER5;
+					IPPU.Controller = SNES_MULTIPLAYER5;
+				}
+			}
 			else
 				joys[i] &= ~(1 << (15 - j));
 		}

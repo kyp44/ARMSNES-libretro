@@ -1128,12 +1128,7 @@ void S9xResetPPU()
 	IPPU.Mouse[0] = IPPU.Mouse[1] = 0;
 	IPPU.PrevMouseX[0] = IPPU.PrevMouseX[1] = 256 / 2;
 	IPPU.PrevMouseY[0] = IPPU.PrevMouseY[1] = 224 / 2;
-
-	if (Settings.ControllerOption == 0)
-		IPPU.Controller = SNES_MAX_CONTROLLER_OPTIONS - 1;
-	else
-		IPPU.Controller = Settings.ControllerOption - 1;
-	S9xNextController();
+	IPPU.Controller = Settings.ControllerOption;
 
 	for (c = 0; c < 2; c++)
 		memset(& IPPU.Clip[c], 0, sizeof(struct ClipData));
@@ -1270,6 +1265,9 @@ void ProcessSuperScope()
 	}
 }
 
+// DJW this function is unecessary as far as I can tell,
+// perhaps it was called externally in an old version of SNES9x
+/*
 void S9xNextController()
 {
 	switch (IPPU.Controller)
@@ -1305,7 +1303,7 @@ void S9xNextController()
 			IPPU.Controller = SNES_JOYPAD;
 			break;
 	}
-}
+	}*/
 
 void S9xUpdateJoypads()
 {
@@ -1362,6 +1360,7 @@ void S9xUpdateJoypads()
 	if (Settings.SuperScopeMaster)
 		ProcessSuperScope();
 
+	// Auto joypad code
 	if (Memory.FillRAM[0x4200] & 1)
 	{
 		PPU.Joypad1ButtonReadPos = 16;
